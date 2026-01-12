@@ -60,6 +60,7 @@ def ffmpeg_command(file_path:str, iteration:int, noloop:bool=False, port="8554",
     try:
         subprocess.Popen(command, process_group=pgid)
     except:
+        command[0] = "./ffmpeg"
         try:
             subprocess.Popen(command, process_group=pgid)
         except:
