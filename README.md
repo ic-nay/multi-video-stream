@@ -1,5 +1,5 @@
-# multi-video-stream
-Just a small tool that works with MediaMTX to stream multiple videos at once.
+# Multi-video stream
+Just a small tool that works with MediaMTX and FFmpeg to stream multiple videos at once.
 
 ## Required software and set-up
 Beyond Python (versions 3.11+), you will also need the following software:
@@ -13,9 +13,11 @@ You'll want to either install both of these tools and add them to your path (as 
 *NOTE: Ensure that the mediamtx.yml configuration file is present in the same directory as this script. If it is not, you will run into an issue where FFmpeg will not be able to find a path for the RTSP stream.*
 
 ## Using the program
-To use the program, simply run
-`python3 main.py [PATH_TO_DIRECTORY_WITH_VIDEO_FILES]`
+To use the program, simply run `python3 main.py [PATH_TO_DIRECTORY_WITH_VIDEO_FILES]`.
+The videos should be hosted on rtsp://localhost:8554/x.sdp, where 'x' is an incrementing number beginning from 0.
+
 ### optional parameters
 - `-v, --v`: verbosity (not yet implemented)
 - `-n, --noloop`: Prevents the default behaviour of looping videos over and over again
 - `-p, --port`: Specifies the port number for RTSP as something other than the default (8554)
+- `-o, --output`: Specifies what file the stream links should be written to, if any.
