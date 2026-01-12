@@ -8,6 +8,7 @@ I want to:
 Forget GIUs, this has to be done yesterday. It will take a directory of videos as a command-line argument. 
 
 TODO (ranked by priority):
-1. Kill processes once they are done executing
+1. Add option to specify paths to mediamtx and ffmpeg binaries
 2. Double-check tools are correctly installed and available before attempting to use
-3. Verbosity
+3. Help menu
+4. Verbosity

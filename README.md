@@ -8,16 +8,22 @@ Beyond Python (versions 3.11+), you will also need the following software:
 
 [FFmpeg](https://ffmpeg.org/download.html) is the client we are using to dispatch RTSP streams to the server.
 
-You'll want to either install both of these tools and add them to your path (as `mediamtx` and `ffmpeg`) or download their executables and place them in the same folder as this script. Either way, it will have to be possible for you to execute them from the command line, as that is what this script automates.
+You'll want to either install both of these tools and add them to your path (as `mediamtx` and `ffmpeg`) or download their executables and place them in the same folder as this script. The program will first attempt to use a binary found in the folder before trying the one available in PATH.
+
+*NOTE FOR MAC USERS: When we tested this with Darwin, we found that even though mediamtx successfully installed via brew it still failed to run, so you may have to place the binary directly in the folder* 
 
 *NOTE: Ensure that the mediamtx.yml configuration file is present in the same directory as this script. If it is not, you will run into an issue where FFmpeg will not be able to find a path for the RTSP stream.*
 
+### Videos
+The videos should be in a directory of nothing but videos. It will skip over subdirectories, but the files should just be video files. They don't have to be anywhere special, relative paths can work just fine.
+
 ## Using the program
 To use the program, simply run `python3 main.py [PATH_TO_DIRECTORY_WITH_VIDEO_FILES]`.
-The videos should be hosted on rtsp://localhost:8554/x.sdp, where 'x' is an incrementing number beginning from 0.
+The videos should be available on rtsp://localhost:8554/x.sdp, where 'x' is an incrementing number beginning from 0.
 
 ### optional parameters
 - `-v, --v`: verbosity (not yet implemented)
 - `-n, --noloop`: Prevents the default behaviour of looping videos over and over again
 - `-p, --port`: Specifies the port number for RTSP as something other than the default (8554)
 - `-o, --output`: Specifies what file the stream links should be written to, if any.
+- `-m, --mtx`: Specifies path used for 
