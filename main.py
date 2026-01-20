@@ -1,26 +1,20 @@
 import argparse
 import os
-import sys
 import subprocess
-from multiprocessing import Process
 from time import sleep
 
 FFMPEG_COMMAND = "ffmpeg -stream_loop -1 -i /home/nic/test_videos/video_1.mp4 -f rtsp rtsp://localhost:8554/live.sdp"
 
-popen_flags = {}
-
 def main():
-    global popen_flags
-    print(popen_flags)
     pgid = os.getpgid(os.getpid())
     args = parser.parse_args()
     if not os.path.isdir(args.directory):
         raise argparse.ArgumentError(f"{args.directory} is not a valid directory")
     try:
-        proc = subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
+        subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
     except:
         try:
-            proc = subprocess.Popen("mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
+            subprocess.Popen("mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
         except:
             print("Could not find mediamtx program in same directory as script or as user program")
             exit(1)
@@ -79,13 +73,5 @@ if __name__ == "__main__":
     parser.add_argument("-n", "--noloop", action="store_true", default=False)
     parser.add_argument("-p", "--port", default="8554")
     parser.add_argument("-o", "--output")
-
-    if os.name == 'posix':
-        popen_flags["start_new_session"] = True
-    elif os.name == 'nt':
-        popen_flags["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP        
-    else:
-        print("Unsupported OS!")
-        exit(1)
 
     main()
