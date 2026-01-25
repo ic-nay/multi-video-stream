@@ -2,8 +2,7 @@ import argparse
 import os
 import subprocess
 from time import sleep
-
-FFMPEG_COMMAND = "ffmpeg -stream_loop -1 -i /home/nic/test_videos/video_1.mp4 -f rtsp rtsp://localhost:8554/live.sdp"
+from shutil import which
 
 def main():
     pgid = os.getpgid(os.getpid())
@@ -14,7 +13,7 @@ def main():
         subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
     except:
         try:
-            subprocess.Popen("mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
+            subprocess.Popen(which("mediamtx"), env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
         except:
             print("Could not find mediamtx program in same directory as script or as user program")
             exit(1)
