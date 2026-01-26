@@ -29,10 +29,11 @@ def main():
             command = ffmpeg_command(file.path, i, noloop=args.noloop, port=args.port, pgid=pgid)
             if (args.output):
                 output_file.write(f"{command}\n")
+    output_file.close()
 
     sleep(5)
 
-    input("Press ENTER to end execution...")
+    input("Press ENTER to end execution...") #Doesn't seem to work, must fix...
     exit(0)
 
 
