@@ -4,16 +4,15 @@ import subprocess
 from time import sleep
 from shutil import which
 
-def main():
-    pgid = os.getpgid(os.getpid())
+def main(Popen_args):
     args = parser.parse_args()
     if not os.path.isdir(args.directory):
         raise argparse.ArgumentError(f"{args.directory} is not a valid directory")
     try:
-        subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
+        subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
     except:
         try:
-            subprocess.Popen(which("mediamtx"), env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, process_group=pgid)
+            subprocess.Popen(which("mediamtx"), env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
         except:
             print("Could not find mediamtx program in same directory as script or as user program")
             exit(1)
@@ -25,10 +24,11 @@ def main():
             os.remove(args.output)
         output_file = open(args.output, "a")
     for i, file in enumerate(os.scandir(args.directory)):
-        if file.is_file():            
-            command = ffmpeg_command(file.path, i, noloop=args.noloop, port=args.port, pgid=pgid)
+        if file.is_file():
+            command = ffmpeg_command(file.path, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
             if (args.output):
                 output_file.write(f"{command}\n")
+
     output_file.close()
 
     sleep(5)
@@ -37,7 +37,7 @@ def main():
     exit(0)
 
 
-def ffmpeg_command(file_path:str, iteration:int, noloop:bool=False, port="8554", pgid:int=0) -> str:
+def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, port="8554") -> str:
     command = [
             "ffmpeg", 
             "" if noloop else "-stream_loop",
@@ -52,11 +52,11 @@ def ffmpeg_command(file_path:str, iteration:int, noloop:bool=False, port="8554",
             f"rtsp://localhost:{port}/{iteration}.sdp"
         ]
     try:
-        subprocess.Popen(command, process_group=pgid)
+        subprocess.Popen(command, **Popen_args)
     except:
         command[0] = "./ffmpeg"
         try:
-            subprocess.Popen(command, process_group=pgid)
+            subprocess.Popen(command, **Popen_args)
         except:
             print("Could not find ffmpeg program in same directory as script or as user program")
             exit(1)
@@ -74,4 +74,13 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", default="8554")
     parser.add_argument("-o", "--output")
 
-    main()
+    if os.name == "nt":
+        Popen_args = {
+            "creationflags":subprocess.CREATE_NEW_PROCESS_GROUP
+        }
+    else:
+        Popen_args = {
+            "process_group":os.getpgid(os.getpid())
+        }
+
+    main(Popen_args)

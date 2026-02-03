@@ -10,8 +10,6 @@ Beyond Python (versions 3.11+), you will also need the following software:
 
 You'll want to either install both of these tools and add them to your path (as `mediamtx` and `ffmpeg`) or download their executables and place them in the same folder as this script. The program will first attempt to use a binary found in the folder before trying the one available in PATH.
 
-*NOTE FOR MAC USERS: When we tested this with Darwin, we found that even though mediamtx successfully installed via brew it still failed to run, so you may have to place the binary directly in the folder* 
-
 *NOTE: Ensure that the mediamtx.yml configuration file is present in the same directory as this script. If it is not, you will run into an issue where FFmpeg will not be able to find a path for the RTSP stream.*
 
 ### Videos
