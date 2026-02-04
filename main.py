@@ -7,7 +7,7 @@ from shutil import which
 def main(Popen_args):
     args = parser.parse_args()
     if not os.path.isdir(args.directory):
-        raise argparse.ArgumentError(f"{args.directory} is not a valid directory")
+        raise argparse.ArgumentError(argument=None, message=f"{args.directory} is not a valid directory")
     try:
         subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
     except:
