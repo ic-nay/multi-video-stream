@@ -28,8 +28,9 @@ def main(Popen_args):
             command = ffmpeg_command(file.path, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
             if (args.output):
                 output_file.write(f"{command}\n")
-
-    output_file.close()
+    
+    if (args.output):
+        output_file.close()
 
     sleep(5)
 
