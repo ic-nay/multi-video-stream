@@ -39,7 +39,7 @@ def main(Popen_args):
 
 
 def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, port="8554") -> str:
-    command = [
+    command = list(filter(lambda s: not not s, [
             "ffmpeg", 
             "" if noloop else "-stream_loop",
             "" if noloop else "-1",
@@ -51,7 +51,7 @@ def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, 
             "-f",
             "rtsp",
             f"rtsp://localhost:{port}/{iteration}.sdp"
-        ]
+        ]))
     try:
         subprocess.Popen(command, **Popen_args)
     except:
