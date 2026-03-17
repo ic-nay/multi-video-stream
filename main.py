@@ -6,8 +6,9 @@ from shutil import which
 
 def main(Popen_args):
     args = parser.parse_args()
-    if not os.path.isdir(args.directory):
-        raise argparse.ArgumentError(argument=None, message=f"{args.directory} is not a valid directory")
+    if not args.live:
+        if not os.path.isdir(args.directory):
+            raise argparse.ArgumentError(argument=None, message=f"{args.directory} is not a valid directory")
     try:
         subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
     except:
@@ -19,17 +20,22 @@ def main(Popen_args):
     
     sleep(3)
 
-    if (args.output):
+    if args.output:
         if os.path.isfile(args.output):
             os.remove(args.output)
         output_file = open(args.output, "a")
-    for i, file in enumerate(os.scandir(args.directory)):
-        if file.is_file():
-            command = ffmpeg_command(file.path, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
-            if (args.output):
-                output_file.write(f"{command}\n")
+    if args.live:
+        url = ffmpeg_command(args.directory, 100, Popen_args=Popen_args, port=args.port)
+        if args.output:
+            output_file.write(f"{url}\n")
+    else:
+        for i, file in enumerate(os.scandir(args.directory)):
+            if file.is_file():
+                url = ffmpeg_command(file.path, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
+                if args.output:
+                    output_file.write(f"{url}\n")
     
-    if (args.output):
+    if args.output:
         output_file.close()
 
     sleep(5)
@@ -71,6 +77,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("directory")
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
+    parser.add_argument("-l", "--live", action="store_true", default=False)
     parser.add_argument("-n", "--noloop", action="store_true", default=False)
     parser.add_argument("-p", "--port", default="8554")
     parser.add_argument("-o", "--output")
