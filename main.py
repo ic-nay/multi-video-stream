@@ -10,10 +10,10 @@ def main(Popen_args):
         if not os.path.isdir(args.directory):
             raise argparse.ArgumentError(argument=None, message=f"{args.directory} is not a valid directory")
     try:
-        subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
+        subprocess.Popen("./mediamtx", env={"MTX_RTSPADDRESS": f"{args.ip}:{args.port}"}, **Popen_args)
     except:
         try:
-            subprocess.Popen(which("mediamtx"), env={"MTX_RTSPADDRESS": f"localhost:{args.port}"}, **Popen_args)
+            subprocess.Popen(which("mediamtx"), env={"MTX_RTSPADDRESS": f"{args.ip}:{args.port}"}, **Popen_args)
         except:
             print("Could not find mediamtx program in same directory as script or as user program")
             exit(1)
@@ -56,7 +56,7 @@ def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, 
             file_path,
             "-f",
             "rtsp",
-            f"rtsp://localhost:{port}/{iteration}.sdp"
+            f"rtsp://{args.ip}:{port}/{iteration}.sdp"
         ]))
     try:
         subprocess.Popen(command, **Popen_args)
@@ -79,6 +79,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", action="store_true", default=False)
     parser.add_argument("-l", "--live", action="store_true", default=False)
     parser.add_argument("-n", "--noloop", action="store_true", default=False)
+    parser.add_argument("-i", "--ip", default="localhost")
     parser.add_argument("-p", "--port", default="8554")
     parser.add_argument("-o", "--output")
 
