@@ -25,13 +25,13 @@ def main(Popen_args):
             os.remove(args.output)
         output_file = open(args.output, "a")
     if args.live:
-        url = ffmpeg_command(args.directory, 100, Popen_args=Popen_args, port=args.port)
+        url = ffmpeg_command(args.directory, args.ip, 100, Popen_args=Popen_args, port=args.port)
         if args.output:
             output_file.write(f"{url}\n")
     else:
         for i, file in enumerate(os.scandir(args.directory)):
             if file.is_file():
-                url = ffmpeg_command(file.path, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
+                url = ffmpeg_command(file.path, args.ip, i, Popen_args=Popen_args, noloop=args.noloop, port=args.port)
                 if args.output:
                     output_file.write(f"{url}\n")
     
@@ -41,10 +41,11 @@ def main(Popen_args):
     sleep(5)
 
     input("Press ENTER to end execution...") #Doesn't seem to work, must fix...
+    print("Triggered")
     exit(0)
 
 
-def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, port="8554") -> str:
+def ffmpeg_command(file_path:str, ip:str, iteration:int, Popen_args, noloop:bool=False, port="8554") -> str:
     command = list(filter(lambda s: not not s, [
             "ffmpeg", 
             "" if noloop else "-stream_loop",
@@ -56,7 +57,7 @@ def ffmpeg_command(file_path:str, iteration:int, Popen_args, noloop:bool=False, 
             file_path,
             "-f",
             "rtsp",
-            f"rtsp://{args.ip}:{port}/{iteration}.sdp"
+            f"rtsp://{ip}:{port}/{iteration}.sdp"
         ]))
     try:
         subprocess.Popen(command, **Popen_args)
